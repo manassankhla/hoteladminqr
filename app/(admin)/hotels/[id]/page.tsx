@@ -206,9 +206,7 @@ export default function HotelDetailsPage() {
               </div>
             </div>
 
-            <Button className="w-full h-14 rounded-sm bg-orange-500 hover:bg-orange-600 text-white font-black text-lg shadow-xl shadow-orange-100 transition-all active:scale-95">
-              Download Full Report
-            </Button>
+
           </div>
         </div>
       </div>
