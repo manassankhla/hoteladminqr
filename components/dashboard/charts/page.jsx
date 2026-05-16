@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { 
   Area, 
   AreaChart, 
@@ -51,7 +52,7 @@ const generateChartData = (baseValue, type) => {
   }]
 }
 
-export default function DrawerChart({ className, title, description, value, unit, type = "area" }) {
+export default function DrawerChart({ className, title, description, value, unit, type = "area", image }) {
   const chartData = React.useMemo(() => generateChartData(value || 0, type), [value, type])
 
   return (
@@ -59,23 +60,35 @@ export default function DrawerChart({ className, title, description, value, unit
       <DrawerTrigger asChild>
         <Button
           variant="outline"
-          className={`relative overflow-hidden p-0 border border-orange-500/20 rounded-none bg-orange-500/5 hover:bg-orange-500/10 backdrop-blur-md shadow-sm ${className} group h-full w-full transition-colors`}
+          className={`relative overflow-hidden p-0 border border-orange-500/20 rounded-none shadow-sm ${className} group h-full w-full cursor-pointer bg-white`}
         >
+          {image && (
+            <Image
+              src={image}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105 z-0"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          )}
+          {/* Solid Orange Tint Overlay */}
+          <div className={`absolute inset-0 z-10 transition-colors pointer-events-none ${image ? 'bg-orange-500/70' : 'bg-orange-600'} group-hover:bg-orange-600/80`} />
+
           {/* CONTENT */}
-          <div className="flex h-full w-full flex-col justify-center p-8 text-left items-start">
-            <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mb-2">
+          <div className="flex h-full w-full flex-col justify-center p-8 text-left items-start relative z-20">
+            <p className="text-white/90 text-sm font-bold uppercase tracking-widest mb-2 drop-shadow-sm">
               {title}
             </p>
-            <h1 className="text-5xl font-black text-gray-900 mb-2 tracking-tighter">
+            <h1 className="text-5xl font-black text-white mb-2 tracking-tighter drop-shadow-sm">
               {value || 0}
             </h1>
-            <p className="text-gray-400 font-medium line-clamp-2 text-sm whitespace-normal">
+            <p className="text-white/90 font-medium line-clamp-2 text-sm whitespace-normal drop-shadow-sm">
               {description}
             </p>
           </div>
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="bg-white border-none rounded-none h-auto max-h-[90vh] overflow-hidden">
+      <DrawerContent className="bg-white border-none !rounded-none h-auto max-h-[90vh] overflow-hidden">
         <div className="mx-auto w-full max-w-xl">
           <DrawerHeader className="pt-4 pb-0">
             <div className="flex flex-col items-center">

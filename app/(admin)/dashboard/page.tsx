@@ -6,6 +6,8 @@ import { hotelService } from "@/lib/api/hotel"
 import DrawerChart from "@/components/dashboard/charts/page"
 import { AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import bookingImg from "@/public/booking.png"
+import hotelImg from "@/public/hotel.png"
 
 export default function Dashboard() {
   const { data: stats, error, isLoading, isValidating, mutate } = useSWR('admin_stats', hotelService.getStats)
@@ -32,7 +34,7 @@ export default function Dashboard() {
           variant="outline" 
           onClick={() => mutate()}
           disabled={isValidating}
-          className="rounded-sm h-10 px-6 bg-white border-gray-200 shadow-sm hover:bg-gray-50 font-bold"
+          className="h-10 px-6 bg-white border-gray-200 hover:bg-gray-50 font-bold rounded-none"
         >
           <RefreshCw className={`w-4 h-4 text-gray-500 mr-2 ${isValidating ? 'animate-spin' : ''}`} />
           Sync Data
@@ -71,13 +73,15 @@ export default function Dashboard() {
               description: "Monthly platform revenue overview",
               value: stats?.totalRevenue ? `₹${stats.totalRevenue.toLocaleString()}` : "₹0",
               unit: "Revenue",
-              type: "pie"
+              type: "pie",
+              image: bookingImg
             },
             {
               title: "Guest Engagement",
               description: "Total guests reached across all properties",
               value: stats?.totalGuests || 0,
               unit: "Guests",
+              image: hotelImg
             }
           ].map((insight, i) => (
             <DrawerChart
@@ -88,6 +92,7 @@ export default function Dashboard() {
               value={insight.value}
               unit={insight.unit}
               type={insight.type}
+              image={insight.image}
             />
           ))}
         </div>

@@ -41,11 +41,11 @@ export default function Sidebar() {
             <Link
               key={link.title}
               href={link.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-sm transition-all duration-200 font-medium
+              className={`flex items-center gap-3 px-4 py-3 rounded-none transition-all duration-200 font-medium
                 ${
                   isActive
                     ? "bg-orange-500 text-white shadow-md shadow-orange-100"
-                    : "text-gray-500 hover:bg-orange-50 hover:text-orange-600"
+                    : "text-gray-500 hover:bg-orange-50 "
                 }
               `}
             >
@@ -55,14 +55,17 @@ export default function Sidebar() {
           )
         })}
       </div>
+<div className="mt-auto">
+  <div className="w-full border-t border-gray-200 mb-4"></div>
 
-      <button
-        onClick={() => authService.logout()}
-        className="mt-auto flex items-center gap-3 px-4 py-3 rounded-sm text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium group"
-      >
-        <LogOut size={20} className="text-gray-400 group-hover:text-red-600" />
-        <span>Logout</span>
-      </button>
+  <button
+    onClick={() => authService.logout()}
+    className="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-red-50 cursor-pointer"
+  >
+    <LogOut size={20} />
+    <span>Logout</span>
+  </button>
+</div>
     </div>
   )
 }
