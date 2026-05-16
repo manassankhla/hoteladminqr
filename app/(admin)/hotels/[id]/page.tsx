@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useParams, useRouter } from "next/navigation"
+import useSWR from "swr"
 import { hotelService } from "@/lib/api/hotel"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card"
@@ -13,7 +14,7 @@ import {
   MapPin,
   Clock,
   TrendingUp,
-  Loader2
+  AlertCircle
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -22,27 +23,15 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function HotelDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
-  const [hotelStats, setHotelStats] = useState<any>(null)
-  const [hotelInfo, setHotelInfo] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  
+  const { data: hotelStats, error, isLoading } = useSWR(
+    id ? `hotel_stats_${id}` : null, 
+    () => hotelService.getHotelStats(id as string)
+  )
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const stats = await hotelService.getHotelStats(id as string)
-        setHotelStats(stats)
-        setHotelInfo(stats.hotelInfo)
-      } catch (err) {
-        console.error("Failed to fetch hotel details:", err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    if (id) fetchData()
-  }, [id])
+  const hotelInfo = hotelStats?.hotelInfo
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="p-6 md:p-10 space-y-8 bg-gray-50 min-h-screen">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -66,8 +55,18 @@ export default function HotelDetailsPage() {
     )
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <AlertCircle className="w-12 h-12 text-red-500" />
+        <h1 className="text-2xl font-bold text-gray-900">Failed to load hotel details</h1>
+        <p className="text-gray-500">{error.message || "An error occurred."}</p>
+        <Button onClick={() => router.push('/hotels')}>Back to List</Button>
+      </div>
+    )
+  }
 
-  if (!hotelInfo && !loading) {
+  if (!hotelInfo) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <h1 className="text-2xl font-bold">Hotel Not Found</h1>
@@ -215,8 +214,6 @@ export default function HotelDetailsPage() {
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
+import useSWRInfinite from "swr/infinite"
 import { hotelService } from "@/lib/api/hotel"
 import { 
   Table, 
@@ -13,72 +14,50 @@ import {
 } from "@/components/ui/table"
 import { 
   Card, 
-  CardHeader, 
-  CardTitle, 
-  CardContent, 
-  CardDescription 
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { 
   Search, 
   Hotel, 
-  ChevronRight, 
   RefreshCw, 
-  Calendar, 
-  Users, 
-  ArrowLeft,
   Loader2,
   ExternalLink,
-  MapPin,
-  Clock,
-  TrendingUp
 } from "lucide-react"
 import { format } from "date-fns"
 
 export default function HotelsPage() {
-  const [hotels, setHotels] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
   const [search, setSearch] = useState("")
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
   const router = useRouter()
 
-  const fetchHotels = async (pageNum = 1, append = false) => {
-    try {
-      if (append) setLoadingMore(true); else setLoading(true);
-      
-      const data = await hotelService.getHotels(pageNum, 10)
-      
-      // Since backend now returns { hotels, pagination }
-      const newHotels = data.hotels || []
-      const pagination = data.pagination || {}
-      
-      setHotels(prev => append ? [...prev, ...newHotels] : newHotels)
-      setHasMore(pageNum < pagination.pages)
-      setPage(pageNum)
-    } catch (err) {
-      console.error("Failed to fetch hotels:", err)
-    } finally {
-      setLoading(false)
-      setLoadingMore(false)
+  const { data, error, size, setSize, isValidating, isLoading, mutate } = useSWRInfinite(
+    (pageIndex, previousPageData) => {
+      if (previousPageData && !previousPageData.hotels?.length) return null
+      return `hotels_page_${pageIndex + 1}`
+    },
+    (key) => {
+      const page = parseInt(key.split('_').pop() || '1')
+      return hotelService.getHotels(page, 10)
+    },
+    {
+      revalidateFirstPage: false
     }
-  }
+  )
 
-  useEffect(() => {
-    fetchHotels(1, false)
-  }, [])
-
-  const handleLoadMore = () => {
-    if (!loadingMore && hasMore) {
-      fetchHotels(page + 1, true)
-    }
-  }
+  const hotels = data ? data.flatMap(page => page.hotels || []) : []
+  const lastPage = data ? data[data.length - 1] : null
+  const hasMore = lastPage?.pagination ? size < lastPage.pagination.pages : false
+  const loadingMore = isValidating && size > 1
 
   const filteredHotels = hotels.filter(h => 
     h.username.toLowerCase().includes(search.toLowerCase())
   )
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore) {
+      setSize(size + 1)
+    }
+  }
 
   return (
     <div className="p-6 md:p-10 space-y-8 bg-gray-50 min-h-screen">
@@ -105,10 +84,10 @@ export default function HotelsPage() {
           <Button 
             variant="outline" 
             size="icon" 
-            onClick={() => fetchHotels(1, false)}
-            className={`rounded-2xl h-12 w-12 bg-white border-gray-200 shadow-sm hover:bg-gray-50 ${loading ? 'opacity-50' : ''}`}
+            onClick={() => mutate()}
+            className={`rounded-2xl h-12 w-12 bg-white border-gray-200 shadow-sm hover:bg-gray-50 ${(isLoading || isValidating) ? 'opacity-50' : ''}`}
           >
-            <RefreshCw className={`w-4.5 h-4.5 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4.5 h-4.5 text-gray-500 ${(isLoading || isValidating) ? 'animate-spin' : ''}`} />
           </Button>
         </div>
       </div>
@@ -125,7 +104,7 @@ export default function HotelsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
+            {isLoading && hotels.length === 0 ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i} className="animate-pulse h-20 border-gray-50">
                   <TableCell colSpan={5} className="px-8"><div className="h-4 bg-gray-100 rounded w-full" /></TableCell>

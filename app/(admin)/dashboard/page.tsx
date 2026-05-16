@@ -1,32 +1,26 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import Image from "next/image"
+import useSWR from "swr"
 import { hotelService } from "@/lib/api/hotel"
 import DrawerChart from "@/components/dashboard/charts/page"
 import { AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: stats, error, isLoading, isValidating, mutate } = useSWR('admin_stats', hotelService.getStats)
 
-  const fetchStats = async () => {
-    try {
-      setLoading(true)
-      const data = await hotelService.getStats()
-      setStats(data)
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
+  if (error) {
+    return (
+      <div className="p-6 md:p-10 flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <AlertCircle className="w-12 h-12 text-red-500" />
+        <h2 className="text-xl font-bold text-gray-900">Failed to load statistics</h2>
+        <p className="text-gray-500 text-center max-w-md">{error.message || "An error occurred while fetching the dashboard data."}</p>
+        <Button onClick={() => mutate()} variant="outline">Try Again</Button>
+      </div>
+    )
   }
-
-  useEffect(() => {
-    fetchStats()
-  }, [])
 
   return (
     <div className="p-6 md:p-10 space-y-10 bg-gray-50 min-h-screen">
@@ -37,10 +31,11 @@ export default function Dashboard() {
         </div>
         <Button 
           variant="outline" 
-          onClick={fetchStats}
+          onClick={() => mutate()}
+          disabled={isValidating}
           className="rounded-sm h-12 px-6 bg-white border-gray-200 shadow-sm hover:bg-gray-50 font-bold"
         >
-          <RefreshCw className={`w-4.5 h-4.5 text-gray-500 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4.5 h-4.5 text-gray-500 mr-2 ${isValidating ? 'animate-spin' : ''}`} />
           Sync Data
         </Button>
       </div>
@@ -54,7 +49,6 @@ export default function Dashboard() {
             { title: 'Total Guests', description: 'Customers served', value: stats?.totalGuests, image: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=800', shadow: 'shadow-purple-100/20' }
           ].map((card, i) => (
             <div key={i} className={`relative overflow-hidden h-32 rounded-sm border ${card.shadow} group shadow-xl bg-gray-200`}>
-              {/* NEXT/IMAGE OPTIMIZATION */}
               <Image
                 src={card.image}
                 alt={card.title}
@@ -63,15 +57,13 @@ export default function Dashboard() {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={i === 0}
               />
-              {/* OVERLAY */}
               <div className="absolute inset-0 bg-orange-500/70" />
-              {/* CONTENT */}
               <div className="relative z-10 flex h-full w-full flex-col justify-center p-8 text-left">
                 <p className="text-white/70 text-sm font-bold uppercase tracking-widest mb-1">
                   {card.title}
                 </p>
                 <h1 className="text-2xl font-black text-white">
-                  {loading && !stats ? "..." : (card.value || 0)}
+                  {isLoading ? "..." : (card.value || 0)}
                 </h1>
                 <p className="text-white/80 font-medium">
                   {card.description}
