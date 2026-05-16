@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import Image from "next/image"
 import { hotelService } from "@/lib/api/hotel"
 import DrawerChart from "@/components/dashboard/charts/page"
 import { AlertCircle, RefreshCw } from "lucide-react"
@@ -44,8 +45,6 @@ export default function Dashboard() {
         </Button>
       </div>
 
-      
-
       <div className="space-y-6">
         <h2 className="text-xl font-bold text-gray-900 ml-1">Core Metrics</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -54,12 +53,15 @@ export default function Dashboard() {
             { title: 'Total Bookings', description: 'Reservations processed', value: stats?.totalBookings, image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=800', shadow: 'shadow-green-100/20' },
             { title: 'Total Guests', description: 'Customers served', value: stats?.totalGuests, image: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=800', shadow: 'shadow-purple-100/20' }
           ].map((card, i) => (
-            <div key={i} className={`relative overflow-hidden h-32 rounded-sm border ${card.shadow} group shadow-xl`}>
-              {/* BACKGROUND IMAGE */}
-              <img
+            <div key={i} className={`relative overflow-hidden h-32 rounded-sm border ${card.shadow} group shadow-xl bg-gray-200`}>
+              {/* NEXT/IMAGE OPTIMIZATION */}
+              <Image
                 src={card.image}
                 alt={card.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={i === 0}
               />
               {/* OVERLAY */}
               <div className="absolute inset-0 bg-orange-500/70" />
@@ -114,6 +116,6 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-
   )
 }
+

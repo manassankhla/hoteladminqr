@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { 
   Area, 
   AreaChart, 
@@ -59,13 +60,15 @@ export default function DrawerChart({ className, title, description, value, unit
       <DrawerTrigger asChild>
         <Button
           variant="outline"
-          className={`relative overflow-hidden p-0 border rounded-sm ${className} group`}
+          className={`relative overflow-hidden p-0 border rounded-sm ${className} group h-full w-full`}
         >
-          {/* BACKGROUND IMAGE */}
-          <img
+          {/* NEXT/IMAGE OPTIMIZATION */}
+          <Image
             src={image}
             alt={title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
 
           {/* OVERLAY */}
@@ -79,7 +82,7 @@ export default function DrawerChart({ className, title, description, value, unit
             <h1 className="text-5xl font-black text-white mb-2 tracking-tighter">
               {value || 0}
             </h1>
-            <p className="text-white/80 font-medium">
+            <p className="text-white/80 font-medium line-clamp-2">
               {description}
             </p>
           </div>
@@ -165,6 +168,7 @@ export default function DrawerChart({ className, title, description, value, unit
     </Drawer>
   )
 }
+
 
 
 

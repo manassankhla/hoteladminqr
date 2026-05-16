@@ -17,6 +17,8 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 
+import { Skeleton } from "@/components/ui/skeleton"
+
 export default function HotelDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
@@ -28,14 +30,9 @@ export default function HotelDetailsPage() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        // Fetch all hotels to find this specific one for the name/info
-        const hotels = await hotelService.getHotels()
-        const found = hotels.find((h: any) => h._id === id)
-        setHotelInfo(found)
-
-        // Fetch the detailed stats
         const stats = await hotelService.getHotelStats(id as string)
         setHotelStats(stats)
+        setHotelInfo(stats.hotelInfo)
       } catch (err) {
         console.error("Failed to fetch hotel details:", err)
       } finally {
@@ -47,15 +44,28 @@ export default function HotelDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-6 bg-gray-50">
-        <div className="relative">
-           <div className="w-16 h-16 border-4 border-orange-100 border-t-orange-500 rounded-full animate-spin" />
-           <Hotel className="w-6 h-6 text-orange-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      <div className="p-6 md:p-10 space-y-8 bg-gray-50 min-h-screen">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex items-start gap-5">
+            <Skeleton className="h-10 w-10 rounded-sm" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+          </div>
         </div>
-        <p className="text-gray-500 font-bold tracking-wide uppercase text-xs">Loading Property Analytics...</p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32 rounded-sm" />)}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Skeleton className="lg:col-span-2 h-[400px] rounded-sm" />
+          <Skeleton className="h-[400px] rounded-sm" />
+        </div>
       </div>
     )
   }
+
 
   if (!hotelInfo && !loading) {
     return (

@@ -9,10 +9,11 @@ export const hotelService = {
     return await apiFetch("/api/admin/stats")
   },
 
-  // All hotels list
-  getHotels: async () => {
-    return await apiFetch("/api/admin/hotels")
+  // All hotels list with pagination
+  getHotels: async (page = 1, limit = 10) => {
+    return await apiFetch(`/api/admin/hotels?page=${page}&limit=${limit}`)
   },
+
 
   // Single hotel detailed stats
   getHotelStats: async (id: string) => {
