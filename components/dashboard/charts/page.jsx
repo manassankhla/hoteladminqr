@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
 import { 
   Area, 
   AreaChart, 
@@ -52,7 +51,7 @@ const generateChartData = (baseValue, type) => {
   }]
 }
 
-export default function DrawerChart({ className, title, description, value, unit, image, type = "area" }) {
+export default function DrawerChart({ className, title, description, value, unit, type = "area" }) {
   const chartData = React.useMemo(() => generateChartData(value || 0, type), [value, type])
 
   return (
@@ -60,29 +59,17 @@ export default function DrawerChart({ className, title, description, value, unit
       <DrawerTrigger asChild>
         <Button
           variant="outline"
-          className={`relative overflow-hidden p-0 border rounded-sm ${className} group h-full w-full`}
+          className={`relative overflow-hidden p-0 border border-gray-200 rounded-sm bg-white hover:bg-gray-50 shadow-sm ${className} group h-full w-full`}
         >
-          {/* NEXT/IMAGE OPTIMIZATION */}
-          <Image
-            src={image}
-            alt={title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-
-          {/* OVERLAY */}
-          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors"></div>
-
           {/* CONTENT */}
-          <div className="relative z-10 flex h-full w-full flex-col justify-end p-10 text-left">
-            <p className="text-white/70 text-sm font-bold uppercase tracking-widest mb-2">
+          <div className="flex h-full w-full flex-col justify-center p-8 text-left items-start">
+            <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mb-2">
               {title}
             </p>
-            <h1 className="text-5xl font-black text-white mb-2 tracking-tighter">
+            <h1 className="text-5xl font-black text-gray-900 mb-2 tracking-tighter">
               {value || 0}
             </h1>
-            <p className="text-white/80 font-medium line-clamp-2">
+            <p className="text-gray-400 font-medium line-clamp-2 text-sm whitespace-normal">
               {description}
             </p>
           </div>

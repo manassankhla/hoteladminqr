@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import Image from "next/image"
 import useSWR from "swr"
 import { hotelService } from "@/lib/api/hotel"
 import DrawerChart from "@/components/dashboard/charts/page"
@@ -44,31 +43,20 @@ export default function Dashboard() {
         <h2 className="text-xl font-bold text-gray-900 ml-1">Core Metrics</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: 'Total Hotels', description: 'Active properties registered', value: stats?.totalHotels, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=800', shadow: 'shadow-blue-100/20' },
-            { title: 'Total Bookings', description: 'Reservations processed', value: stats?.totalBookings, image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=800', shadow: 'shadow-green-100/20' },
-            { title: 'Total Guests', description: 'Customers served', value: stats?.totalGuests, image: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=800', shadow: 'shadow-purple-100/20' }
+            { title: 'Total Hotels', description: 'Active properties registered', value: stats?.totalHotels },
+            { title: 'Total Bookings', description: 'Reservations processed', value: stats?.totalBookings },
+            { title: 'Total Guests', description: 'Customers served', value: stats?.totalGuests }
           ].map((card, i) => (
-            <div key={i} className={`relative overflow-hidden h-32 rounded-sm border ${card.shadow} group shadow-xl bg-gray-200`}>
-              <Image
-                src={card.image}
-                alt={card.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={i === 0}
-              />
-              <div className="absolute inset-0 bg-orange-500/70" />
-              <div className="relative z-10 flex h-full w-full flex-col justify-center p-8 text-left">
-                <p className="text-white/70 text-sm font-bold uppercase tracking-widest mb-1">
-                  {card.title}
-                </p>
-                <h1 className="text-2xl font-black text-white">
-                  {isLoading ? "..." : (card.value || 0)}
-                </h1>
-                <p className="text-white/80 font-medium">
-                  {card.description}
-                </p>
-              </div>
+            <div key={i} className="relative overflow-hidden h-32 rounded-sm border border-gray-200 shadow-sm bg-white p-6 flex flex-col justify-center">
+              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">
+                {card.title}
+              </p>
+              <h1 className="text-3xl font-black text-gray-900 mb-1">
+                {isLoading ? "..." : (card.value || 0)}
+              </h1>
+              <p className="text-gray-400 font-medium text-xs">
+                {card.description}
+              </p>
             </div>
           ))}
         </div>
@@ -83,7 +71,6 @@ export default function Dashboard() {
               description: "Monthly platform revenue overview",
               value: stats?.totalRevenue ? `₹${stats.totalRevenue.toLocaleString()}` : "₹0",
               unit: "Revenue",
-              image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
               type: "pie"
             },
             {
@@ -91,17 +78,15 @@ export default function Dashboard() {
               description: "Total guests reached across all properties",
               value: stats?.totalGuests || 0,
               unit: "Guests",
-              image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=800"
             }
           ].map((insight, i) => (
             <DrawerChart
               key={i}
-              className="h-64 shadow-xl shadow-orange-100/20"
+              className="h-64"
               title={insight.title}
               description={insight.description}
               value={insight.value}
               unit={insight.unit}
-              image={insight.image}
               type={insight.type}
             />
           ))}
