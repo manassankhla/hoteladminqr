@@ -22,36 +22,36 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 md:p-10 space-y-10 bg-gray-50 min-h-screen">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="p-4 md:p-6 space-y-6 bg-gray-50 h-[calc(100vh-2rem)] overflow-hidden flex flex-col">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
         <div>
-          <h1 className="text-4xl font-black tracking-tight text-gray-900">Dashboard</h1>
-          <p className="text-gray-500 mt-2 font-medium">Global platform analytics and performance.</p>
+          <h1 className="text-3xl font-black tracking-tight text-gray-900">Dashboard</h1>
+          <p className="text-gray-500 mt-1 text-sm font-medium">Global platform analytics and performance.</p>
         </div>
         <Button 
           variant="outline" 
           onClick={() => mutate()}
           disabled={isValidating}
-          className="rounded-sm h-12 px-6 bg-white border-gray-200 shadow-sm hover:bg-gray-50 font-bold"
+          className="rounded-sm h-10 px-6 bg-white border-gray-200 shadow-sm hover:bg-gray-50 font-bold"
         >
-          <RefreshCw className={`w-4.5 h-4.5 text-gray-500 mr-2 ${isValidating ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 text-gray-500 mr-2 ${isValidating ? 'animate-spin' : ''}`} />
           Sync Data
         </Button>
       </div>
 
-      <div className="space-y-6">
-        <h2 className="text-xl font-bold text-gray-900 ml-1">Core Metrics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="space-y-4 shrink-0">
+        <h2 className="text-lg font-bold text-gray-900 ml-1">Core Metrics</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             { title: 'Total Hotels', description: 'Active properties registered', value: stats?.totalHotels },
             { title: 'Total Bookings', description: 'Reservations processed', value: stats?.totalBookings },
             { title: 'Total Guests', description: 'Customers served', value: stats?.totalGuests }
           ].map((card, i) => (
-            <div key={i} className="relative overflow-hidden h-32 rounded-sm border border-gray-200 shadow-sm bg-white p-6 flex flex-col justify-center">
-              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">
+            <div key={i} className="relative overflow-hidden h-28 rounded-sm border border-gray-200 shadow-sm bg-white p-5 flex flex-col justify-center">
+              <p className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-1">
                 {card.title}
               </p>
-              <h1 className="text-3xl font-black text-gray-900 mb-1">
+              <h1 className="text-2xl font-black text-gray-900 mb-1">
                 {isLoading ? "..." : (card.value || 0)}
               </h1>
               <p className="text-gray-400 font-medium text-xs">
@@ -62,9 +62,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <h2 className="text-xl font-bold text-gray-900 ml-1">Graphical Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="space-y-4 flex-1 min-h-0 flex flex-col">
+        <h2 className="text-lg font-bold text-gray-900 ml-1 shrink-0">Graphical Insights</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
           {[
             {
               title: "Revenue Analysis",
@@ -82,7 +82,7 @@ export default function Dashboard() {
           ].map((insight, i) => (
             <DrawerChart
               key={i}
-              className="h-64"
+              className="h-full w-full min-h-[160px]"
               title={insight.title}
               description={insight.description}
               value={insight.value}

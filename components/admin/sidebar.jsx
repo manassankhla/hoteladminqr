@@ -29,9 +29,6 @@ export default function Sidebar() {
   return (
     <div className="hidden md:flex flex-col w-64 h-screen border-r bg-white p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-12">
-        <div className="w-10 h-10 rounded-sm bg-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-200">
-          <LayoutDashboard size={24} />
-        </div>
         <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
       </div>
 
