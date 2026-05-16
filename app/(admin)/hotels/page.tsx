@@ -92,7 +92,7 @@ export default function HotelsPage() {
         </div>
       </div>
 
-      <Card className="border-none shadow-sm overflow-hidden bg-white rounded-sm mb-10">
+      <Card className="border-none shadow-sm overflow-x-auto bg-white rounded-sm mb-10">
         <Table>
           <TableHeader className="bg-gray-50/50">
             <TableRow className="hover:bg-transparent border-gray-100 h-14">

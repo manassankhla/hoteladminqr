@@ -22,7 +22,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-gray-50 h-[calc(100vh-2rem)] overflow-hidden flex flex-col">
+    <div className="space-y-6 h-auto md:h-[calc(100vh-3rem)] flex flex-col md:overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-gray-900">Dashboard</h1>
@@ -41,13 +41,13 @@ export default function Dashboard() {
 
       <div className="space-y-4 shrink-0">
         <h2 className="text-lg font-bold text-gray-900 ml-1">Core Metrics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             { title: 'Total Hotels', description: 'Active properties registered', value: stats?.totalHotels },
             { title: 'Total Bookings', description: 'Reservations processed', value: stats?.totalBookings },
             { title: 'Total Guests', description: 'Customers served', value: stats?.totalGuests }
           ].map((card, i) => (
-            <div key={i} className="relative overflow-hidden h-28 rounded-sm border border-gray-200 shadow-sm bg-white p-5 flex flex-col justify-center">
+            <div key={i} className="relative overflow-hidden h-28 rounded-none border border-orange-500/20 shadow-sm bg-orange-500/5 backdrop-blur-md p-5 flex flex-col justify-center hover:bg-orange-500/10 transition-colors">
               <p className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mb-1">
                 {card.title}
               </p>
@@ -62,9 +62,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 min-h-0 flex flex-col">
+      <div className="space-y-4 flex-1 min-h-0 flex flex-col mt-6 md:mt-0">
         <h2 className="text-lg font-bold text-gray-900 ml-1 shrink-0">Graphical Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-[300px] md:min-h-0">
           {[
             {
               title: "Revenue Analysis",

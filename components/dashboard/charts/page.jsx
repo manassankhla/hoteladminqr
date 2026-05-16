@@ -59,7 +59,7 @@ export default function DrawerChart({ className, title, description, value, unit
       <DrawerTrigger asChild>
         <Button
           variant="outline"
-          className={`relative overflow-hidden p-0 border border-gray-200 rounded-sm bg-white hover:bg-gray-50 shadow-sm ${className} group h-full w-full`}
+          className={`relative overflow-hidden p-0 border border-orange-500/20 rounded-none bg-orange-500/5 hover:bg-orange-500/10 backdrop-blur-md shadow-sm ${className} group h-full w-full transition-colors`}
         >
           {/* CONTENT */}
           <div className="flex h-full w-full flex-col justify-center p-8 text-left items-start">
@@ -75,7 +75,7 @@ export default function DrawerChart({ className, title, description, value, unit
           </div>
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="bg-white border-none rounded-t-sm h-auto max-h-[90vh] overflow-hidden">
+      <DrawerContent className="bg-white border-none rounded-none h-auto max-h-[90vh] overflow-hidden">
         <div className="mx-auto w-full max-w-xl">
           <DrawerHeader className="pt-4 pb-0">
             <div className="flex flex-col items-center">
@@ -95,7 +95,7 @@ export default function DrawerChart({ className, title, description, value, unit
               </div>
             </div>
 
-            <div className="h-[200px] w-full bg-gray-50/50 rounded-sm p-3 border border-gray-100 shadow-inner">
+            <div className="h-[200px] w-full bg-orange-500/5 rounded-none p-3 border border-orange-500/20 backdrop-blur-md shadow-inner">
               <ResponsiveContainer width="100%" height="100%">
                 {type === "pie" ? (
                   <PieChart>
@@ -145,7 +145,7 @@ export default function DrawerChart({ className, title, description, value, unit
 
           <DrawerFooter className="pb-6 pt-0 px-6">
             <DrawerClose asChild>
-              <Button className="h-10 rounded-sm bg-gray-900 hover:bg-black text-white font-bold text-sm shadow-md transition-all active:scale-95">
+              <Button className="h-10 rounded-none bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-md transition-all active:scale-95">
                 Close
               </Button>
             </DrawerClose>
