@@ -52,11 +52,6 @@ export default function SignupPage() {
       <Card className="w-full max-w-md border-gray-200 bg-white text-gray-900 shadow-xl relative z-10 rounded-2xl overflow-hidden">
         <div className="h-2 bg-orange-500 w-full" />
         <CardHeader className="space-y-1 text-center pt-8">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 rounded-2xl bg-orange-50 text-orange-600 shadow-sm border border-orange-100">
-              <User className="w-8 h-8" />
-            </div>
-          </div>
           <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
             Register Hotel
           </CardTitle>

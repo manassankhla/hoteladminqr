@@ -50,11 +50,6 @@ export default function LoginPage() {
       <Card className="w-full max-w-md border-gray-200 bg-white text-gray-900 shadow-2xl relative z-10 rounded-3xl overflow-hidden">
         <div className="h-2 bg-gradient-to-r from-blue-600 to-blue-400 w-full" />
         <CardHeader className="space-y-1 text-center pt-10">
-          <div className="flex justify-center mb-6">
-            <div className="p-4 rounded-3xl bg-blue-50 text-blue-600 shadow-sm border border-blue-100">
-              <ShieldCheck className="w-10 h-10" />
-            </div>
-          </div>
           <CardTitle className="text-4xl font-black tracking-tight text-gray-900">
             Super Admin
           </CardTitle>
