@@ -131,7 +131,7 @@ export default function LoginPage() {
         </CardContent>
         <CardFooter className="pb-10">
           <p className="text-center w-full text-xs text-gray-400 font-bold uppercase tracking-widest">
-            Hotel QR Management System &copy; 2024
+            Hotel QR Management System &copy; 2026
           </p>
         </CardFooter>
       </Card>
