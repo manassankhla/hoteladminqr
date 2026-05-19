@@ -4,23 +4,23 @@ import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import useSWRInfinite from "swr/infinite"
 import { hotelService } from "@/lib/api/hotel"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table"
-import { 
-  Card, 
+import {
+  Card,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { 
-  Search, 
-  Hotel, 
-  RefreshCw, 
+import {
+  Search,
+  Hotel,
+  RefreshCw,
   Loader2,
   ExternalLink,
 } from "lucide-react"
@@ -49,7 +49,7 @@ export default function HotelsPage() {
   const hasMore = lastPage?.pagination ? size < lastPage.pagination.pages : false
   const loadingMore = isValidating && size > 1
 
-  const filteredHotels = hotels.filter(h => 
+  const filteredHotels = hotels.filter(h =>
     h.username.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -64,12 +64,10 @@ export default function HotelsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-4xl font-black tracking-tight text-gray-900 flex items-center gap-3">
-            <div className="p-2 bg-white rounded-2xl shadow-sm border border-gray-100">
-              <Hotel className="w-8 h-8 text-orange-500" />
-            </div>
+           
             Hotels
           </h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage and view details of your registered properties.</p>
+          <p className="text-gray-500 mt-2 font-medium">.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative w-full md:w-[320px]">
@@ -81,9 +79,9 @@ export default function HotelsPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Button 
-            variant="outline" 
-            size="icon" 
+          <Button
+            variant="outline"
+            size="icon"
             onClick={() => mutate()}
             className={`rounded-2xl h-12 w-12 bg-white border-gray-200 shadow-sm hover:bg-gray-50 ${(isLoading || isValidating) ? 'opacity-50' : ''}`}
           >
@@ -113,8 +111,8 @@ export default function HotelsPage() {
             ) : filteredHotels.length > 0 ? (
               <>
                 {filteredHotels.map((hotel) => (
-                  <TableRow 
-                    key={hotel._id} 
+                  <TableRow
+                    key={hotel._id}
                     onClick={() => router.push(`/hotels/${hotel._id}`)}
                     className="group hover:bg-orange-50/30 transition-all border-gray-50 cursor-pointer h-20"
                   >
@@ -144,7 +142,7 @@ export default function HotelsPage() {
                     </TableCell>
                   </TableRow>
                 ))}
-                
+
                 {hasMore && (
                   <TableRow className="hover:bg-transparent border-none">
                     <TableCell colSpan={5} className="p-8 text-center">
