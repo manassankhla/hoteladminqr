@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Users, BookOpen, LogOut } from "lucide-react"
+import { LayoutDashboard, Users, BookOpen, LogOut, CreditCard } from "lucide-react"
 import { authService } from "@/lib/api/auth"
 
 const links = [
@@ -20,6 +20,11 @@ const links = [
     title: "Signup Hotel",
     href: "/signup",
     icon: BookOpen,
+  },
+  {
+    title: "Transactions",
+    href: "/transactions",
+    icon: CreditCard,
   },
 ]
 

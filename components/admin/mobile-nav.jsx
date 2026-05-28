@@ -3,7 +3,7 @@
 import React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Users, BookOpen, LogOut, Menu } from "lucide-react"
+import { LayoutDashboard, Users, BookOpen, LogOut, Menu, CreditCard } from "lucide-react"
 import { authService } from "@/lib/api/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,6 +30,11 @@ const links = [
     title: "Signup Hotel",
     href: "/signup",
     icon: BookOpen,
+  },
+  {
+    title: "Transactions",
+    href: "/transactions",
+    icon: CreditCard,
   },
 ]
 

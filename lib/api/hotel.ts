@@ -27,4 +27,14 @@ export const hotelService = {
       body: JSON.stringify(hotelData),
     })
   },
+
+  // All transactions / recharge history
+  getTransactions: async (page = 1, limit = 20) => {
+    return await apiFetch(`/api/admin/transactions?page=${page}&limit=${limit}`)
+  },
+
+  // Transactions for a specific hotel (by userId)
+  getHotelTransactions: async (userId: string) => {
+    return await apiFetch(`/api/admin/transactions?userId=${userId}&limit=50`)
+  },
 }

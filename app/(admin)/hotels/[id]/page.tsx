@@ -14,11 +14,57 @@ import {
   MapPin,
   Clock,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  CreditCard,
+  CheckCircle2,
+  XCircle,
+  IndianRupee,
+  CalendarDays
 } from "lucide-react"
 import { format } from "date-fns"
 
 import { Skeleton } from "@/components/ui/skeleton"
+
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { color: string; icon: React.ReactNode; label: string }> = {
+    success: {
+      color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+      icon: <CheckCircle2 size={12} />,
+      label: "Success",
+    },
+    failed: {
+      color: "bg-red-50 text-red-700 border border-red-200",
+      icon: <XCircle size={12} />,
+      label: "Failed",
+    },
+    cancelled: {
+      color: "bg-gray-100 text-gray-600 border border-gray-200",
+      icon: <Clock size={12} />,
+      label: "Cancelled",
+    },
+  }
+  const s = map[status] || map.cancelled
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${s.color}`}>
+      {s.icon}
+      {s.label}
+    </span>
+  )
+}
+
+function SourceBadge({ source }: { source: string }) {
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
+        source === "webhook"
+          ? "bg-blue-50 text-blue-700 border border-blue-200"
+          : "bg-orange-50 text-orange-700 border border-orange-200"
+      }`}
+    >
+      {source === "webhook" ? "Auto" : "Manual"}
+    </span>
+  )
+}
 
 export default function HotelDetailsPage() {
   const { id } = useParams()
@@ -29,6 +75,12 @@ export default function HotelDetailsPage() {
     () => hotelService.getHotelStats(id as string)
   )
 
+  const { data: transactionData, isLoading: isTxLoading } = useSWR(
+    id ? `hotel_tx_${id}` : null,
+    () => hotelService.getHotelTransactions(id as string)
+  )
+
+  const transactions = transactionData?.transactions || []
   const hotelInfo = hotelStats?.hotelInfo
 
   if (isLoading) {
@@ -213,6 +265,126 @@ export default function HotelDetailsPage() {
                   <p className="text-2xl font-black text-gray-900">{inventory.totalCategories || 0}</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Subscription & Transaction History Section */}
+        <div className="space-y-6 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-black text-gray-900">Subscription & Payments</h3>
+            <div className="flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider ${
+                hotelInfo?.subscriptionStatus === 'active' ? 'bg-emerald-100 text-emerald-700' : 
+                hotelInfo?.subscriptionStatus === 'trial' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'
+              }`}>
+                {hotelInfo?.subscriptionStatus || 'Unknown'}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="bg-white p-5 rounded-sm border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-2">
+                <CreditCard className="text-orange-500 w-5 h-5" />
+                <p className="text-sm font-bold text-gray-500">Plan Status</p>
+              </div>
+              <p className="text-lg font-black text-gray-900 capitalize">{hotelInfo?.subscriptionStatus || "—"}</p>
+              {hotelInfo?.razorpaySubscriptionId && (
+                <p className="text-xs text-gray-400 font-mono mt-1">{hotelInfo.razorpaySubscriptionId}</p>
+              )}
+            </div>
+            
+            <div className="bg-white p-5 rounded-sm border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-2">
+                <CalendarDays className="text-blue-500 w-5 h-5" />
+                <p className="text-sm font-bold text-gray-500">Start Date</p>
+              </div>
+              <p className="text-lg font-black text-gray-900">
+                {hotelInfo?.subscriptionStartDate 
+                  ? format(new Date(hotelInfo.subscriptionStartDate), "dd MMM yyyy") 
+                  : "—"}
+              </p>
+            </div>
+
+            <div className="bg-white p-5 rounded-sm border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-3 mb-2">
+                <Clock className="text-red-500 w-5 h-5" />
+                <p className="text-sm font-bold text-gray-500">Trial / Expiry</p>
+              </div>
+              <p className="text-lg font-black text-gray-900">
+                {hotelInfo?.trialEndDate 
+                  ? format(new Date(hotelInfo.trialEndDate), "dd MMM yyyy") 
+                  : "—"}
+              </p>
+            </div>
+          </div>
+
+          {/* Transactions Table */}
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden rounded-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50">
+                    <th className="text-left px-4 py-3 font-bold text-gray-500 text-[11px] uppercase tracking-wider">Transaction ID</th>
+                    <th className="text-left px-4 py-3 font-bold text-gray-500 text-[11px] uppercase tracking-wider">Plan / Event</th>
+                    <th className="text-left px-4 py-3 font-bold text-gray-500 text-[11px] uppercase tracking-wider">Amount</th>
+                    <th className="text-left px-4 py-3 font-bold text-gray-500 text-[11px] uppercase tracking-wider">Status</th>
+                    <th className="text-left px-4 py-3 font-bold text-gray-500 text-[11px] uppercase tracking-wider">Source</th>
+                    <th className="text-left px-4 py-3 font-bold text-gray-500 text-[11px] uppercase tracking-wider">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isTxLoading ? (
+                    Array.from({ length: 3 }).map((_, i) => (
+                      <tr key={i} className="border-b border-gray-50">
+                        {Array.from({ length: 6 }).map((_, j) => (
+                          <td key={j} className="px-4 py-3">
+                            <div className="h-4 bg-gray-100 rounded animate-pulse w-24" />
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : transactions.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-8 text-center text-gray-400 font-medium">
+                        No transactions found for this hotel.
+                      </td>
+                    </tr>
+                  ) : (
+                    transactions.map((t: any) => (
+                      <tr key={t._id} className="border-b border-gray-50 hover:bg-orange-50/40 transition-colors">
+                        <td className="px-4 py-3">
+                          <p className="font-mono text-xs text-gray-700 truncate max-w-[160px]">
+                            {t.razorpayPaymentId || "—"}
+                          </p>
+                          <p className="font-mono text-[10px] text-gray-400 truncate max-w-[160px]">
+                            {t.razorpaySubscriptionId || ""}
+                          </p>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-xs text-gray-600 font-medium">
+                            {t.event?.replace("subscription.", "").replace(".", " ") || "—"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`font-black text-base ${t.status === "success" ? "text-emerald-600" : "text-gray-400"}`}>
+                            {t.amountINR > 0 ? `₹${t.amountINR.toLocaleString("en-IN")}` : <span className="text-gray-300 text-sm font-medium">₹0</span>}
+                          </span>
+                          <p className="text-[10px] text-gray-400">{t.currency}</p>
+                        </td>
+                        <td className="px-4 py-3"><StatusBadge status={t.status} /></td>
+                        <td className="px-4 py-3"><SourceBadge source={t.source} /></td>
+                        <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                          {t.chargedAt ? new Date(t.chargedAt).toLocaleString("en-IN", {
+                            day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+                          }) : "—"}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
